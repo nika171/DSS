@@ -17,7 +17,7 @@ Dieses System ist eine Protoyp, mit der Unternehmen die Fähigkeiten ihrer Mitar
 
 Gehe zu [nodejs.org/download](https://nodejs.org/en/download/) und installiere die LTS-Version.
 
-
+## ⚡ Installation & Setup
 
 ### 1. Repository klonen (optional)
 ```bash
