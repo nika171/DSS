@@ -19,7 +19,7 @@ Gehe zu [nodejs.org/download](https://nodejs.org/en/download/) und installiere d
 
 ## ⚡ Installation & Setup
 
-### 1. Repository klonen (optional)
+### 1. Repository klonen
 ```bash
 git clone <repository-url>
 cd DSS-main
@@ -59,19 +59,18 @@ python main.py
 Anwendung im Browser öffnen:  
 [http://localhost:5000](http://localhost:5000)
 
-Testnutzer 
-Admin
+### 4. Tesnutzer
+
+## Admin
 E-Mail: admin@test.de
 Passwort: admin
 
-Nutzer ohne Adminrechte
+## Nutzer ohne Adminrechte
 E-Mail: erika@test.de
 Passwort: erika
 
-Nutzer ohne Adminrechte
 E-Mail: max@test.de
 Passwort: max
 
-Nutzer ohne Adminrechte
 E-Mail: tom@test.de
 Passwort: tom
