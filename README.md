@@ -1,6 +1,6 @@
-# Kompetenz- und Projektmanagementsystem
+# Prototyp - Entscheidungsunterstützungssystem
 
-Dieses System ist eine Protoyp, mit der Unternehmen die Fähigkeiten ihrer Mitarbeiter und die Zuteilung zu Projekten verwalten können. Die Anwendung basiert auf Python und verwendet Flask als Framework. **Du brauchst Python und Node.js auf deinem Computer!**
+Dieses System ist eine Protoyp, mit dem Projektleiter die Fähigkeiten der Mitarbeiter und die Zuteilung zu Projekten verwalten können.
 
 
 ## 🛠️ Voraussetzung
