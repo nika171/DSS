@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Projekthistorie - Entscheidungsunterstützungssystem{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      
+      <div class="mb-4 flex items-center justify-between">
+         <h1 class="mb-4 text-4xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Projekthistorie</h1>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+        <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          
+          {% if projekte %}
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-white dark:text-gray-300 border-collapse border border-gray-300 dark:border-gray-600" role="table" aria-label="Abgeschlossene Projekte">
+                <thead class="bg-[#2A4A6A] dark:bg-gray-700">
+                    <tr role="row">
+                      <th class="border border-gray-300 dark:border-gray-600 px-4 py-2" role="columnheader" scope="col">Projektname</th>
+                      <th class="border border-gray-300 dark:border-gray-600 px-4 py-2" role="columnheader" scope="col">Kompetenzen</th>
+                      <th class="border border-gray-300 dark:border-gray-600 px-4 py-2" role="columnheader" scope="col">Zugewiesene Personen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for projekt in projekte %}
+                        <tr class="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700" role="row">
+                          <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white" role="cell">
+                              {{ projekt.project_name }}
+                          </td>
+                          <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900" role="cell">
+                            {% if projekt.requirements %}
+                                <ul class="list-disc list-inside" role="list">
+                                {% for requirement in projekt.requirements %}
+                                    <li class="dark:text-gray-300" role="listitem">
+                                        {% if requirement.knowledge_skill %}
+                                            <span class="font-medium">{{ requirement.knowledge_skill.name }}</span>
+                                            {% if requirement.competence_level %}
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 ml-1">
+                                                  {{ requirement.competence_level }}
+                                                </span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span class="text-gray-500 dark:text-gray-400 italic">Keine Anforderungen definiert</span>
+                            {% endif %}
+                          </td>
+                          <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900 dark:text-gray-300" role="cell">
+                              {% set normal_users = projekt.users|selectattr('admin', 'equalto', false)|list %}
+                              {% if normal_users %}
+                                  <ul class="list-disc list-inside" role="list">
+                                      {% for user in normal_users %}
+                                          <li class="dark:text-gray-300" role="listitem">
+                                              <span class="font-medium">{{ user.name }}</span>
+                                          </li>
+                                      {% endfor %}
+                                  </ul>
+                              {% else %}
+                                  <span class="text-gray-500 dark:text-gray-400 italic">Keine Personen zugewiesen</span>
+                              {% endif %}
+                          </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-12" role="region" aria-live="polite">
+              <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <h2 class="mt-4 text-xl font-semibold text-gray-900 dark:text-white">Noch keine abgeschlossenen Projekte</h2>
+              <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Abgeschlossene Projekte werden hier in der chronologischen Übersicht angezeigt.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>    
+    </div>
+</div>
+{% endblock %}

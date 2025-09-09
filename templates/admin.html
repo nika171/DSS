@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-8xl mx-auto">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+    <div class="mb-4 flex items-center justify-between">
+      <h5 class="mb-4 text-4xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Projekte </h5>
+      <div class="flex space-x-2">
+        <a href="{{ url_for('admin_user_management') }}">
+          <button type="button" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800">
+            Mitarbeiterkompetenzen verwalten
+          </button>  
+        </a>
+        <a href="{{ url_for('project') }}">
+          <button type="button" class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+            Projekt hinzufügen
+          </button>  
+        </a>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+        <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700"> 
+       
+       {% if projekte %} 
+        <table class="admin-projects-table w-full text-sm text-left text-white dark:text-gray-300 border-collapse border border-gray-300 dark:border-gray-600" style="table-layout: fixed;">
+                <thead class="bg-[#2A4A6A] dark:bg-gray-700">
+                    <tr>
+                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center" style="width: 12%;">Projektname</th>
+                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center" style="width: 22%;">Kompetenzen</th>
+                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center" style="width: 11%;">Zugewiesene <br> Nutzer</th>
+                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center" style="width: 10%;">Kompetenz- <br>abdeckung</th>
+                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center" style="width: 24%;">Fehlende Kompetenz</th>
+                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center" style="width: 11%;">Projekt abschließen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                      {% for projekt in projekte %}
+                      {% if projekt.status != 'Abgeschlossen' %}
+                        <tr class="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
+                            
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white text-center" style="width: 12%; word-wrap: break-word;">
+                        {{ projekt.project_name }}
+                        </td>
+              
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900 text-center" style="width: 22%; word-wrap: break-word;">
+                        {% if projekt.requirements %}
+                            {% set ns = namespace(seen=[]) %}
+                            <ul class="list-disc list-inside text-left">
+                                {% for requirement in projekt.requirements %}
+                                {% set competence_name = competence_to_group.get(requirement.knowledge_skill_id) %}
+                                {% if competence_name and competence_name not in ns.seen %}
+                                    {% set _ = ns.seen.append(competence_name) %}
+                                    <li><strong>{{ competence_name }}</strong></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                        {% endif %}
+                        </td>
+
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900 dark:text-gray-300 text-center align-middle" style="width: 11%; word-wrap: break-word;">
+                        {% if projekt.users %}
+                            {{ projekt.users | map(attribute='name') | join(', ') }}
+                        {% else %}
+                            <em>Keiner</em>
+                        {% endif %}    
+                        </td>
+
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white text-center align-middle" style="width: 10%;">
+                            {% if ampel_info is defined %}
+                                {% set farbe = ampel_info[projekt.id] %}
+                                <!-- Grün: Alle Kompetenzen abgedeckt -->
+                                {% if farbe == 'gruen' %}
+                                    <span class="inline-block w-4 h-4 rounded-full bg-green-500" title="Alle Kompetenzen abgedeckt"></span>
+                                <!-- Gelb: Teilweise abgedeckt -->
+                                {% elif farbe == 'gelb' %}
+                                    <span class="inline-block w-4 h-4 rounded-full bg-yellow-400" title="Teilweise abgedeckt"></span>
+                                <!-- Rot: Keine Abdeckung -->
+                                {% else %}
+                                    <span class="inline-block w-4 h-4 rounded-full bg-red-500" title="Keine Abdeckung"></span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-gray-900 italic">Keine Ampel-Information verfügbar</span>
+                            {% endif %}    
+                        </td>
+
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm text-gray-900 dark:text-white text-center" style="width: 24%; word-wrap: break-word;">
+                            {% set fehlend = fehlende_kompetenzen.get(projekt.id) %}
+                            {% if fehlend %}
+                                <ul class="text-gray-900 list-disc list-inside text-left">
+                                {% for kompetenzname in fehlend %}
+                                    <li>{{ kompetenzname }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                <span class="text-gray-900">Alle Kompetenzen abgedeckt</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center align-middle" style="width: 11%;">
+                            <form method="POST" action="{{ url_for('projekt_abschliessen') }}" class="flex justify-center items-center">
+                                {{ form.hidden_tag() }}
+                                <input type="hidden" name="project_id" value="{{ projekt.id }}">
+                                <button type="submit" 
+                                        class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800 mx-auto">
+                                    Projekt abschließen
+                                </button>
+                            </form>
+                        </td>
+
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+             </table>
+            {% endif %}
+        </div>
+        </div>     
+       <div class="grid grid-cols-1 gap-4 mb-4">    
+            <div id="Kompetenzvergleich" class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">  
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Kompetenzvergleich</h5>
+                <h2 class="mt-5 mb-2 text-xl font-bold text-[#2A4A6A] dark:text-white">Projekt auswählen</h2>
+
+                <form method="POST" action="#Kompetenzvergleich">
+                    {{ form.hidden_tag() }}
+                    <select id="project_select" 
+                            name="project_id" 
+                            required
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#2A4A6A] dark:focus:border-[#2A4A6A]">
+                        <option value="">Projekt auswählen</option>
+                        {% for projekt in projekte %}
+                        {% if projekt.status != 'Abgeschlossen' %}
+                            <option value="{{ projekt.id }}"
+                                {% if selected_project and selected_project.id == projekt.id %}selected{% endif %}>
+                                {{ projekt.project_name }}
+                            </option>
+                        {% endif %}    
+                        {% endfor %}
+                    </select>
+                    <div class="flex justify-center mt-4">
+                        <button type="submit" 
+                                class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-6 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                            Kompetenzvergleich anzeigen
+                        </button>
+                    </div>
+                </form>
+           <!-- Kompetenzvergleichstabelle - wird nur angezeigt wenn Projekt ausgewählt -->
+           {% if selected_project %}
+            <div class="overflow-x-auto">
+            <table class="min-w-full table-auto border-collapse border border-gray-300">
+                <thead>
+                    <tr class="text-white bg-[#2A4A6A] dark:bg-gray-700">
+                        <th class="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-white dark:text-white">Kompetenz</th>
+                        {% for eintrag in vergleich %}
+                            <th class="border border-gray-300 px-4 py-2 text-sm text-white dark:text-white">{{ eintrag.user.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for competence_group_name, competences in strukturierte_anforderungen.items() %}
+            <tr>
+                <td colspan="{{ vergleich|length + 1 }}" class="bg-gray-500 text-white text-sm px-4 py-2 font-normal">
+                    {{ competence_group_name }}
+                </td>
+            </tr>
+            {% for competence_name, knowledge_skills in competences.items() %}
+                <tr>
+                    <td colspan="{{ vergleich|length + 1 }}" class="bg-gray-200 text-gray-900 text-sm px-4 py-2 font-normal">
+                        {{ competence_name }}
+                    </td>
+                </tr>
+                {% for knowledge_skill in knowledge_skills %}
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-sm font-medium text-gray-900 dark:text-white">
+                            <strong>{{ knowledge_skill.name }}</strong><br>
+                            <span class="text-xs text-gray-900">(Soll: {{ knowledge_skill.level }})</span>
+                        </td>
+                        {% for eintrag in vergleich %}
+                            {% set info = eintrag.skills.get(knowledge_skill.id) %}
+                            <td class="border border-gray-300 px-4 py-2 text-xs text-center dark:text-white">
+                                {{ info.symbol }}<br>
+                                {{ info.user_level }}<br>
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% endif %}
+
+            {% if selected_project %}
+            <form method="POST" action="{{ url_for('projekt_zuweisen') }}">
+                {{ form.hidden_tag() }}
+                <input type="hidden" name="project_id" value="{{ selected_project.id }}">
+                
+                <h2 class="mt-8 mb-2 text-xl font-bold text-[#2A4A6A] dark:text-white">Nutzer zuweisen</h2>
+                <select id="user_ids" 
+                        name="user_ids[]" 
+                        multiple
+                        required
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                            focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 
+                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
+                            dark:text-white dark:focus:ring-[#2A4A6A] dark:focus:border-[#2A4A6A]"
+                        size="6">
+                    
+                    {% for eintrag in vergleich %}
+                        {% if eintrag.user.id not in already_assigned_user_ids %}
+                        <option value="{{ eintrag.user.id }}">
+                            {{ eintrag.user.name }}
+                        </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <div class="flex justify-center mt-6">
+                    <button type="submit" 
+                            class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-4 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                        Nutzer zuweisen
+                    </button>
+                </div>
+            </form>
+            {% endif %}
+        </div>    
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+

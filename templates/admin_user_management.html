@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      <div class="mb-4 flex items-center justify-between">
+         <h5 class="mb-4 text-4xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Mitarbeiterkompetenzen</h5>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+         <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            
+            {% if users %}
+            <table class="w-full text-sm text-left text-white dark:text-gray-300 border-collapse border border-gray-300 dark:border-gray-600">
+               <thead class="bg-[#2A4A6A] dark:bg-gray-700">
+                  <tr>
+                     <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">Name</th>
+                     <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">E-Mail</th>
+                     <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">Aktion</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {% for user in users %}
+                  <tr class="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
+   
+                     <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white">
+                        {{ user.name }}
+                     </td>
+                     <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">
+                        {{ user.email }}
+                     </td>
+                     <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center">
+                        {% if not user.admin %}
+                        <a href="{{ url_for('admin_competence', user_id=user.id) }}"
+                           class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-block">
+                              Kompetenzen bearbeiten
+                        </a>
+                        {% else %}
+                        <span class="text-xs text-gray-500 dark:text-gray-400 italic">
+                           Admin-Account
+                        </span>
+                        {% endif %}
+                     </td>
+                     
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-8">
+               <div class="flex flex-col items-center space-y-2">
+                  <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"></path>
+                  </svg>
+                  <span class="text-lg text-gray-500 dark:text-gray-400">Keine Nutzer gefunden</span>
+                  <span class="text-sm text-gray-400 dark:text-gray-500">Alle Nutzer haben Admin-Rechte oder es sind keine Benutzer vorhanden.</span>
+               </div>
+            </div>
+            {% endif %}
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}

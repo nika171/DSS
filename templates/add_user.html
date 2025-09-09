@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      
+      <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-4xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">
+            Nutzerverwaltung
+        </h1>
+      </div>     
+      <div class="grid grid-cols-1 gap-4 mb-4">
+         <div class="w-full p-6 mx-auto bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <h2 class="mb-4 text-2xl font-bold tracking-tight text-[#2A4A6A] dark:text-white text-left">
+               Nutzer hinzufügen
+            </h2>
+            
+            <div class="w-full mx-auto">
+               <form method="POST">
+                  {{ form.hidden_tag() }}
+                  <div class="mb-5">
+                     <label for="{{ form.name.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ form.name.label.text }}
+                     </label>
+                     {{ form.name(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#2A4A6A] dark:focus:border-[#2A4A6A]") }}
+                     {% if form.name.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                           {% for error in form.name.errors %}
+                              <p>{{ error }}</p>
+                           {% endfor %}
+                        </div>
+                     {% endif %}
+                  </div>
+                  <div class="mb-5">
+                     <label for="{{ form.email.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ form.email.label.text }}
+                     </label>
+                     {{ form.email(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#2A4A6A] dark:focus:border-[#2A4A6A]") }}
+                     {% if form.email.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                           {% for error in form.email.errors %}
+                              <p>{{ error }}</p>
+                           {% endfor %}
+                        </div>
+                     {% endif %}
+                  </div>
+                  <div class="mb-5">
+                     <label for="{{ form.password_hash.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ form.password_hash.label.text }}
+                     </label>
+                     {{ form.password_hash(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#2A4A6A] dark:focus:border-[#2A4A6A]") }}
+                     {% if form.password_hash.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                           {% for error in form.password_hash.errors %}
+                              <p>{{ error }}</p>
+                           {% endfor %}
+                        </div>
+                     {% endif %}
+                  </div>
+                  <div class="mb-5 flex items-center justify-center">
+                     {{ form.admin(class="w-4 h-4 text-[#2A4A6A] bg-gray-100 border-gray-300 rounded focus:ring-[#2A4A6A] dark:focus:ring-[#2A4A6A] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600") }}
+                     <label for="{{ form.admin.id }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                        {{ form.admin.label.text }}
+                     </label>
+                  </div>
+                  <div class="flex justify-center">
+                     {{ form.submit(class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800") }}
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+      <div class="grid grid-cols-1 gap-4 mb-4">
+         <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <h2 class="mb-4 text-2xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">
+               Alle Nutzer
+            </h2>
+            
+            {% if users %}
+            <div class="overflow-x-auto">
+               <table class="w-full text-sm text-left text-white dark:text-gray-300 border-collapse border border-gray-300 dark:border-gray-600">
+                  <thead class="bg-[#2A4A6A] dark:bg-gray-700">
+                     <tr>
+                        <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">Name</th>
+                        <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">E-Mail</th>
+                        <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">Admin</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for user in users %}
+                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white">
+                           {{ user.name }}
+                        </td>
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-white">
+                           {{ user.email }}
+                        </td>
+                        <td class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-center">
+                           {% if user.admin %}
+                              <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-300">
+                                 Admin
+                              </span>
+                           {% else %}
+                              <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">
+                                 Nutzer
+                              </span>
+                           {% endif %}
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+            {% else %}
+            <div class="text-left py-8">
+               <p class="text-gray-500 dark:text-gray-400">Keine Nutzer vorhanden.</p>
+            </div>
+            {% endif %}
+         </div>
+      </div>
+
+   </div>
+</div>
+{% endblock %}

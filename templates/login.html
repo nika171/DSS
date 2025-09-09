@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex flex-col items-center px-6 py-4 mx-auto md:h-screen lg:py-0">
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">        
+            <h2 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                Anmelden
+            </h2>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="space-y-4 md:space-y-6">
+                    <div>
+                        {{ form.email.label(class="block mb-2 text-sm font-medium text-gray-900 dark:text-white") }}
+                        {{ form.email(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500") }}
+                        {% if form.email.errors %}
+                          <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.email.errors %}
+                              <p>{{ error }}</p>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        {{ form.password.label(class="block mb-2 text-sm font-medium text-gray-900 dark:text-white") }}
+                        {{ form.password(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500") }}
+                        {% if form.password.errors %}
+                          <div class="mt-1 text-sm text-red-600">
+                            {% for error in form.password.errors %}
+                              <p>{{ error }}</p>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                    </div>
+                   
+                    {{ form.submit(class="w-full text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

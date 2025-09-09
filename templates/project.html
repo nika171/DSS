@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Neues Projekt erstellen - Entscheidungsunterstützungssystem{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      
+      <div class="mb-4 flex items-center justify-between">
+         <h1 class="mb-4 text-4xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">
+            Neues Projekt erstellen
+         </h1>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4">
+        <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+
+          <form method="POST" novalidate>
+             {{ form.hidden_tag() }}  
+             <div class="mb-6">
+                <div class="mb-5">
+                    <label for="project_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Projektname
+                    </label>
+                    <input type="text" 
+                           name="project_name" 
+                           id="project_name" 
+                           required 
+                           aria-describedby="project_name_help"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault(); document.querySelector('[data-accordion-target]').focus();}"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#2A4A6A] focus:border-[#2A4A6A] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#2A4A6A] dark:focus:border-[#2A4A6A]" 
+                           placeholder="Projektname" />
+                </div>
+             </div>
+
+             <h2 class="text-xl mb-4 font-bold text-[#2A4A6A] dark:text-white">Kompetenzanforderungen definieren</h2>
+      
+
+             <div id="accordion-competence-groups" data-accordion="collapse" role="tablist" aria-label="Kompetenzkategorien">
+               {% for competence_group in competence_groups %}
+               <div class="accordion-item">
+                 <h3 id="heading-competence-groups-{{ loop.index }}" role="tab">
+                   <button type="button" 
+                           class="flex items-center justify-between w-full p-5 font-medium text-left text-black border border-[#2A4A6A] {% if not loop.last %}border-b-0{% endif %} hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-[#2A4A6A] focus:ring-opacity-50" 
+                           data-accordion-target="#body-competence-group-{{ loop.index }}" 
+                           aria-expanded="false" 
+                           aria-controls="body-competence-group-{{ loop.index }}"
+                           role="button"
+                           tabindex="0">
+                     {{ competence_group.name }}
+                     <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6" aria-hidden="true">
+                       <path stroke="currentColor" stroke-width="2" d="M9 5 5 1 1 5" />
+                     </svg>
+                   </button>
+                 </h3>
+                 
+                 <div id="body-competence-group-{{ loop.index }}" 
+                      class="hidden" 
+                      aria-labelledby="heading-competence-group-{{ loop.index }}"
+                      role="tabpanel">
+                   <div class="p-5 border border-[#2A4A6A] {% if not loop.last %}border-b-0{% endif %}">
+
+                     <div id="accordion-competences-{{ loop.index }}" data-accordion="collapse" role="tablist" aria-label="Kompetenzgruppen">
+                       {% for competence in competence_group.competences %}
+                       <div class="accordion-subitem">
+                         <h4 id="heading-competence-{{ competence_group.id }}-{{ competence.id }}" role="tab">
+                           <button type="button"
+                                   class="flex items-center justify-between w-full p-4 font-medium text-left text-[#2A4A6A] border border-[#2A4A6A] {% if not loop.last %}border-b-0{% endif %} hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#2A4A6A] focus:ring-opacity-50"
+                                   data-accordion-target="#body-competence-{{ competence_group.id }}-{{ competence.id }}"
+                                   aria-expanded="false"
+                                   aria-controls="body-competence-{{ competence_group.id }}-{{ competence.id }}"
+                                   role="button"
+                                   tabindex="0">
+                             {{ competence.name }}
+                             <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6" aria-hidden="true">
+                               <path stroke="currentColor" stroke-width="2" d="M9 5 5 1 1 5" />
+                             </svg>
+                           </button>
+                         </h4>
+
+                         <div id="body-competence-{{ competence_group.id }}-{{ competence.id }}" 
+                              class="hidden" 
+                              aria-labelledby="heading-competence-{{ competence_group.id }}-{{ competence.id }}"
+                              role="tabpanel">
+                           <div class="p-4 border border-[#2A4A6A] {% if not loop.last %}border-b-0{% endif %} bg-white">
+                             <table class="w-full text-sm text-left text-gray-700" role="table" aria-label="Kompetenzen für {{ competence.name }}">
+                               <thead class="text-xs uppercase bg-[#2A4A6A] text-white">
+                                 <tr role="row">
+                                   <th class="px-6 py-3" role="columnheader" scope="col">Kompetenz</th>
+                                   <th class="px-6 py-3" role="columnheader" scope="col">Kenner</th>
+                                   <th class="px-6 py-3" role="columnheader" scope="col">Könner</th>
+                                   <th class="px-6 py-3" role="columnheader" scope="col">Experte</th>
+                                 </tr>
+                               </thead>
+                               <tbody>
+                                 {% for knowledge_skill in competence.knowledge_skills %}
+                                 <tr class="bg-white border-b" role="row">
+                                   <td class="px-6 py-4" role="cell">
+                                     <label class="font-medium">{{ knowledge_skill.name }}</label>
+                                   </td>
+                                   <td class="px-6 py-4" role="cell">
+                                     <input type="radio" 
+                                            name="projektkompetenzen[{{ knowledge_skill.id }}]" 
+                                            value="Kenner"
+                                            id="kenner_{{ knowledge_skill.id }}"
+                                            aria-label="Kenner-Niveau für {{ knowledge_skill.name }}">
+                                   </td>
+                                   <td class="px-6 py-4" role="cell">
+                                     <input type="radio" 
+                                            name="projektkompetenzen[{{ knowledge_skill.id }}]" 
+                                            value="Könner"
+                                            id="koenner_{{ knowledge_skill.id }}"
+                                            aria-label="Könner-Niveau für {{ knowledge_skill.name }}">
+                                   </td>
+                                   <td class="px-6 py-4" role="cell">
+                                     <input type="radio" 
+                                            name="projektkompetenzen[{{ knowledge_skill.id }}]" 
+                                            value="Experte"
+                                            id="experte_{{ knowledge_skill.id }}"
+                                            aria-label="Experten-Niveau für {{ knowledge_skill.name }}">
+                                   </td>
+                                 </tr>
+                                 {% endfor %}
+                               </tbody>
+                             </table>
+                           </div>
+                         </div>
+                       </div>
+                       {% endfor %}
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               {% endfor %}
+             </div>
+             
+             <div class="mt-8 flex justify-center items-center">
+                <button type="submit" 
+                        class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-8 py-3 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                   Projekt erstellen
+                </button>
+             </div>
+          </form>
+        </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
+
+ 

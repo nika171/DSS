@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Entscheidungsunterstützungssystem{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto">
+   <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+      
+      <div class="mb-4 flex items-center justify-left">
+         <h1 class="mb-4 text-4xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Dashboard</h1>
+      </div>
+      
+      {% if show_competence_update_hint %}
+      <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900 dark:border-blue-700" role="alert" aria-live="polite">
+         <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+               <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+               </svg>
+               <div>
+                  <h2 class="text-lg font-medium text-blue-800 dark:text-blue-200">Kompetenzen aktualisieren</h2>
+                  <p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                     Eines ihrer Projekte wurde kürzlich abgeschlossen. Bitte überprüfen sie ihre Kompetenzen und aktualisieren sie diese.
+                  </p>
+               </div>
+            </div>
+            <div class="flex space-x-2 ml-4">
+               <form method="POST" action="{{ url_for('dismiss_competence_hint') }}" class="inline">
+                  {{ form.hidden_tag() }}
+                  <input type="hidden" name="redirect_to_competence" value="true">
+                  <button type="submit" 
+                          class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 focus:outline-none"
+                          aria-label="Kompetenzen pflegen">
+                     Kompetenzen pflegen
+                  </button>
+               </form>
+               <form method="POST" action="{{ url_for('dismiss_competence_hint') }}" class="inline">
+                  {{ form.hidden_tag() }}
+                  <button type="submit" 
+                          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 rounded p-1"
+                          aria-label="Hinweis ausblenden">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                     </svg>
+                  </button>
+               </form>
+            </div>
+         </div>
+      </div>
+      {% endif %}
+      
+      <div class="flex justify-center mb-4">
+      <!-- Meine Kompetenzen Block -->
+         <div class="w-full max-w-2xl p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+           <h2 class="mb-4 text-2xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Meine Kompetenzen</h2>
+
+        {% if kompetenzstruktur %}
+            {% for competence_group, competences in kompetenzstruktur.items() %}
+                <section class="mb-4" aria-labelledby="category-{{ loop.index }}">
+                  <h3 id="category-{{ loop.index }}" class="text-lg font-semibold text-black mt-3 dark:text-white">{{ competence_group.name }}</h3>
+                  {% for competence, knowledge_skills in competences.items() %}
+                      <div class="ml-2 mt-2">
+                        <h4 class="font-medium text-black dark:text-gray-300">{{ competence.name }}</h4>
+                        <ul class="ml-4 list-disc list-inside text-black dark:text-gray-400" role="list">
+                            {% for skill in knowledge_skills %}
+                                <li role="listitem">
+                                  <span class="font-medium">{{ skill.name }}</span> 
+                                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-black dark:bg-gray-700 dark:text-gray-300 ml-2">
+                                    {{ skill.level }}
+                                  </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                      </div>
+                  {% endfor %}
+                </section>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-8" role="region" aria-live="polite">
+              <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-300">Keine Kompetenzen vorhanden</h3>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pflegen sie ihre ersten Kompetenzen.</p>
+              <div class="mt-6">
+                  <a href="{{ url_for('competence') }}" 
+                     class="text-white bg-[#2A4A6A] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                      Kompetenzen hinzufügen
+                  </a>
+              </div>
+            </div>
+        {% endif %}
+         </div>
+      </div>
+      
+      <!-- Projekt-Blöcke nebeneinander mit Flexbox -->
+      <div class="flex flex-col md:flex-row gap-4 mb-4">
+         <!-- Meine Projekte Block -->
+         <div class="flex-1 p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+           <h2 class="mb-4 text-2xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Meine Projekte</h2>
+
+           {% set active_projects = user_projects | selectattr('status', 'ne', 'Abgeschlossen') | list %}
+           {% if active_projects %}
+             {% for projekt in active_projects %}
+               <section class="mb-4" aria-labelledby="project-{{ loop.index }}">
+                 <h3 id="project-{{ loop.index }}" class="text-lg font-semibold text-[#2A4A6A] mt-3 dark:text-white flex items-center justify-between">
+                   <span>Projekt: {{ projekt.project_name }}</span>
+                 </h3>
+                 
+                 {% if projekt.competence_structure %}
+                   <div class="ml-2 mt-2">
+                     {% for group, competences in projekt.competence_structure.items() %}
+                       <div class="mt-2">
+                         <h5 class="text-sm font-semibold text-black dark:text-white">{{ group.name }}</h5>
+                         {% for competence, skills in competences.items() %}
+                           <div class="ml-2 mt-1">
+                             <h6 class="text-xs font-medium text-black dark:text-gray-400">{{ competence.name }}</h6>
+                             <ul class="ml-3 list-disc list-inside text-black dark:text-gray-400 text-xs" role="list">
+                               {% for skill in skills %}
+                                 <li role="listitem">
+                                   <span class="font-medium">{{ skill.name }}</span> 
+                                   <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 ml-1">
+                                     {{ skill.level }}
+                                   </span>
+                                 </li>
+                               {% endfor %}
+                             </ul>
+                           </div>
+                         {% endfor %}
+                       </div>
+                     {% endfor %}
+                   </div>
+                 {% endif %}
+               </section>
+             {% endfor %}
+           {% else %}
+             <div class="text-center py-8" role="region" aria-live="polite">
+               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+               </svg>
+               <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-300">Keine Projekte</h3>
+               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Sie sind derzeit keinem Projekt zugeordnet.</p>
+             </div>
+           {% endif %}
+         </div>
+
+         <!-- Abgeschlossene Projekte Block -->
+         {% set completed_projects = user_projects | selectattr('status', 'equalto', 'Abgeschlossen') | list %}
+         <div class="flex-1 p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+           <h2 class="mb-4 text-2xl font-bold tracking-tight text-[#2A4A6A] dark:text-white">Meine Projekthistorie</h2>
+
+           {% if completed_projects %}
+             {% for projekt in completed_projects %}
+               <section class="mb-4" aria-labelledby="completed-project-{{ loop.index }}">
+                 <h3 id="completed-project-{{ loop.index }}" class="text-lg font-semibold text-[#2A4A6A] mt-3 dark:text-white flex items-center justify-between">
+                   <span>Projekt: {{ projekt.project_name }}</span>
+                 </h3>
+                 
+                 {% if projekt.competence_structure %}
+                   <div class="ml-2 mt-2">
+                     {% for group, competences in projekt.competence_structure.items() %}
+                       <div class="mt-2">
+                         <h5 class="text-sm font-semibold text-black dark:text-white">{{ group.name }}</h5>
+                         {% for competence, skills in competences.items() %}
+                           <div class="ml-2 mt-1">
+                             <h6 class="text-xs font-medium text-black dark:text-gray-400">{{ competence.name }}</h6>
+                             <ul class="ml-3 list-disc list-inside text-black dark:text-gray-400 text-xs" role="list">
+                               {% for skill in skills %}
+                                 <li role="listitem">
+                                   <span class="font-medium">{{ skill.name }}</span> 
+                                   <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 ml-1">
+                                     {{ skill.level }}
+                                   </span>
+                                 </li>
+                               {% endfor %}
+                             </ul>
+                           </div>
+                         {% endfor %}
+                       </div>
+                     {% endfor %}
+                   </div>
+                 {% endif %}
+                 
+                 {% if projekt.users|length > 1 %}
+                   <div class="ml-2 mt-2">
+                     <h4 class="font-medium text-gray-900 dark:text-gray-300">Teammitglieder</h4>
+                     <ul class="ml-4 list-disc list-inside text-gray-600 dark:text-gray-400" role="list">
+                       {% for user in projekt.users %}
+                         {% if user.id != current_user.id %}
+                           <li role="listitem">
+                             <span class="font-medium">{{ user.name }}</span>
+                           </li>
+                         {% endif %}
+                       {% endfor %}
+                     </ul>
+                   </div>
+                 {% endif %}
+               </section>
+             {% endfor %}
+           {% else %}
+             <div class="text-center py-8" role="region" aria-live="polite">
+               <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+               </svg>
+               <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-300">Keine abgeschlossenen Projekte</h3>
+               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Sie haben noch keine Projekte abgeschlossen.</p>
+             </div>
+           {% endif %}
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
