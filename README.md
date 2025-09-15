@@ -1,6 +1,6 @@
 # Prototyp - Entscheidungsunterstützungssystem
 
-Dieses System ist eine Protoyp, mit dem Projektleiter die Fähigkeiten der Mitarbeiter und die Zuteilung zu Projekten verwalten können.
+Dieses System ist eine Protoyp eines Entscheidungsunterstützungssystem zur Identifikation von Kompetenzenlücken im Data Science Bereicht.
 
 
 ## 🛠️ Voraussetzung
@@ -21,10 +21,10 @@ Gehe zu [nodejs.org/download](https://nodejs.org/en/download/) und installiere d
 
 ### 1. Repository klonen
 ```bash
-git clone <repository-url>
-cd DSS-main
+git clone https://github.com/nika171/DSS.git
+cd DSS
 ```
-Falls sie kein Git haben, kannstder Code auch direkt als ZIP von GitHub heruntergeladen und entpacken werden.
+Falls sie kein Git haben, kann der Code auch direkt als ZIP von GitHub heruntergeladen und entpacken werden.
 
 ### 2. Virtuelle Umgebung erstellen (optional)
 
@@ -53,8 +53,13 @@ npx tailwindcss -i ./src/input.css -o ./static/output.css
 ```
 
 ### 4. Anwendung starten
-```bash
+**Windows:**
+```bash@
 python main.py
+```
+**macOS/Linux:**
+```bash
+python3 main.py
 ```
 Anwendung im Browser öffnen:  
 [http://localhost:5000](http://localhost:5000)
