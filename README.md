@@ -11,7 +11,7 @@ Dieses System ist eine Protoyp eines Entscheidungsunterstützungssystem zur Iden
   
 ### 🐍 Python installieren
 
-1. Gehe zu [python.org/downloads](https://www.python.org/downloads/)
+Gehe zu [python.org/downloads](https://www.python.org/downloads/)
 
 ### 🟩 Node.js installieren
 
