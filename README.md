@@ -1,6 +1,6 @@
 # Prototyp - Entscheidungsunterstützungssystem
 
-Dieses System ist eine Protoyp eines Entscheidungsunterstützungssystem zur Identifikation von Kompetenzenlücken im Data Science Bereich.
+Dieses System ist eine Protoyp eines Entscheidungsunterstützungssystems zur Identifikation von Kompetenzenlücken im Data Science Bereich.
 
 
 ## 🛠️ Voraussetzung
