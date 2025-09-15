@@ -1,6 +1,6 @@
 # Prototyp - Entscheidungsunterstützungssystem
 
-Dieses System ist eine Protoyp eines Entscheidungsunterstützungssystems zur Identifikation von Kompetenzenlücken im Data Science Bereich.
+Dieses System ist eine Prototyp eines Entscheidungsunterstützungssystems zur Identifikation von Kompetenzlücken im Data Science Bereich.
 
 
 ## 🛠️ Voraussetzung
@@ -29,7 +29,7 @@ Falls sie kein Git haben, kann der Code auch direkt als ZIP von GitHub herunterg
 ### 2. Virtuelle Umgebung erstellen (optional)
 
 **Windows:**
-```bash@
+```bash
 python -m venv env
 env\Scripts\activate
 ```
@@ -64,7 +64,7 @@ python3 main.py
 Anwendung im Browser öffnen:  
 [http://localhost:5000](http://localhost:5000)
 
-### 4. Tesnutzer
+### 5. Testnutzer
 
 #### Admin
 E-Mail: admin@test.de
